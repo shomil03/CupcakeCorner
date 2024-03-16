@@ -9,6 +9,10 @@ import SwiftUI
 
 struct AddressView: View {
     @Bindable var order : Order
+    @FocusState var focused : SelectedTextField?
+    enum SelectedTextField{
+        case name , streetAddress , city , Zip
+    }
 
     var body: some View {
         
@@ -17,20 +21,47 @@ struct AddressView: View {
                 Form{
                     Section{
                         TextField("Name", text: $order.name)
-                        TextField("Stree Address", text: $order.streetAddress)
+                            .focused($focused, equals: .name)
+                            .onSubmit() {
+                                focused = .streetAddress
+                            }
+                            .submitLabel(.continue)
+                        
+                        TextField("Street Address", text: $order.streetAddress)
+                            .focused($focused, equals: .streetAddress)
+                            .onSubmit() {
+                                focused = .city
+                            }
+                            .submitLabel(.continue)
+                        
                         TextField("City", text: $order.city)
+                            .focused($focused, equals: .city)
+                            .onSubmit() {
+                                focused = .Zip
+                            }
+                            .submitLabel(.continue)
+                        
                         TextField("Zip", text: $order.zip)
+                            .focused($focused , equals: .Zip)
+                            .onSubmit {
+                                focused = nil
+                            }
                             
                     }
                     
                     Section{
                         NavigationLink("Check Out"){
+                            
                                 CheckoutView(order: order)
                         }
                     }
                     .disabled(order.isValid())
                 }.navigationTitle("Delivery Details")
                     .navigationBarTitleDisplayMode(.inline)
+                
+                    .onAppear{
+                        order.loadData()
+                    }
             }
         }
     }

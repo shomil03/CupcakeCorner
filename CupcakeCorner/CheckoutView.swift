@@ -34,13 +34,21 @@ struct CheckoutView: View {
                     Task{
                         await NetworkManager.shared.NetworkCall(order:order)
                     }
+                    
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .padding()
                 
             }
             .alert(order.AlertItem?.title ?? Text(""), isPresented: $order.isShowingAlert, actions: {}, message: {order.AlertItem?.message})
             .navigationTitle("Check Out")
             .navigationBarTitleDisplayMode(.inline)
             .sensoryFeedback(order.cureentFeedback, trigger: tapped)
+            
+            .onAppear(){
+                order.save()
+            }
             
             
         }.scrollBounceBehavior(.basedOnSize)

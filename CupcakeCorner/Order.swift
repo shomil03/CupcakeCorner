@@ -57,6 +57,17 @@ class Order: Codable {
         return disables
     }
     
+    func save(){
+        UserDefaults.standard.setValue([name , streetAddress , city , zip], forKey: "UserData")
+    }
+
+    func loadData(){
+        let arr = UserDefaults.standard.array(forKey: "UserData") ?? ["" , "" ,"" ,""]
+        name = arr[0] as! String
+        streetAddress = arr[1] as! String
+        city = arr[2] as! String
+        zip = arr[3] as! String
+    }
     
     
     var cost : Decimal{
