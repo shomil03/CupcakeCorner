@@ -20,13 +20,15 @@ struct AddressView: View {
                         TextField("Stree Address", text: $order.streetAddress)
                         TextField("City", text: $order.city)
                         TextField("Zip", text: $order.zip)
+                            
                     }
+                    
                     Section{
                         NavigationLink("Check Out"){
-                            CheckoutView(order: order)
+                                CheckoutView(order: order)
                         }
                     }
-                    .disabled(order.disables)
+                    .disabled(order.isValid())
                 }.navigationTitle("Delivery Details")
                     .navigationBarTitleDisplayMode(.inline)
             }

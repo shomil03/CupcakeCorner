@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import SwiftUI
 @Observable
 class Order: Codable {
     enum CodingKeys : String, CodingKey{
@@ -20,10 +20,11 @@ class Order: Codable {
         case _city = "city"
     }
     static let types = ["Vanilla" , "Chocolate" , "Strawberry" , "Rainbow"]
-    
+    var AlertItem : AlertItem?
+    var isShowingAlert : Bool = false
     var type = 0
     var quantity = 1
-    
+    var cureentFeedback : SensoryFeedback = .success
     var specialRequest = false{
         didSet{
             extraFrosting = specialRequest && extraFrosting
@@ -46,6 +47,17 @@ class Order: Codable {
         }
         return false
     }
+    
+    func isValid() -> Bool{
+        name = name.trimmingCharacters(in: [" "])
+        streetAddress = streetAddress.trimmingCharacters(in: .whitespaces)
+        city = city.trimmingCharacters(in: .whitespaces)
+        zip = zip.trimmingCharacters(in: .whitespaces)
+        
+        return disables
+    }
+    
+    
     
     var cost : Decimal{
         var total = Decimal(quantity) * 65

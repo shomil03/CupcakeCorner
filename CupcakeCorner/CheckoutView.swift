@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct CheckoutView: View {
-    var order : Order
-    @State private var showingConfirmation : Bool = false
-    @State private var confirmationMessage = ""
+    @Bindable var order : Order
+    @State private var tapped : Bool = true
     var body: some View {
         ScrollView{
             VStack {
@@ -31,52 +30,22 @@ struct CheckoutView: View {
                     .font(.title)
                 Spacer()
                 Button("Pay Now"){
+                    tapped.toggle()
                     Task{
-                        await NetworkManager()
+                        await NetworkManager.shared.NetworkCall(order:order)
                     }
                 }
-            }
-            .alert("ThankYou!!", isPresented: $showingConfirmation){
                 
-            } message: {
-                Text(confirmationMessage)
             }
+            .alert(order.AlertItem?.title ?? Text(""), isPresented: $order.isShowingAlert, actions: {}, message: {order.AlertItem?.message})
             .navigationTitle("Check Out")
             .navigationBarTitleDisplayMode(.inline)
+            .sensoryFeedback(order.cureentFeedback, trigger: tapped)
             
             
         }.scrollBounceBehavior(.basedOnSize)
     }
-    func NetworkManager() async{
-        guard let encoded = try? JSONEncoder().encode(order) else{
-            print("Cannot encode data")
-            return
-        }
-        let url = URL(string: "https://reqres.in/api/users")
-        guard let url = url else{
-            print("Invalid URL")
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do{
-            let (data , _) = try await URLSession.shared.upload(
-                for: request, from: encoded)
-            print(data)
-            
-            let decoded = try JSONDecoder().decode(Order.self, from: data)
-            confirmationMessage = "Your order for \(decoded.quantity)x \(Order.types[decoded.type].lowercased()) cupcakes is on the way!"
-            showingConfirmation = true
-            
-        }catch{
-            print("error \(error.localizedDescription)")
-            return
-        }
-        
-    }
+    
 }
 
 #Preview {
