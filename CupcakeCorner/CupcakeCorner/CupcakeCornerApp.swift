@@ -2,7 +2,7 @@
 //  CupcakeCornerApp.swift
 //  CupcakeCorner
 //
-//  Created by Shomil Singh on 12/03/24.
+//  Created by Paul Hudson on 09/11/2023.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct CupcakeCornerApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeScreen()
+            ContentView()
         }
     }
 }
